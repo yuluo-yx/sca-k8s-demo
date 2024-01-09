@@ -13,7 +13,8 @@ spring:
 
 grpc:
   client:
-    GLOBAL:
-      negotiation-type: plaintext
-      enable-keep-alive: true
-      keep-alive-without-calls: true
+    sca-k8s-provider:
+      address: 'discovery:///sca-k8s-provider'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
