@@ -17,15 +17,15 @@
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<grpc.starter.version>2.15.0.RELEASE</grpc.starter.version>
-		<grpc.client.version>2.15.0.RELEASE</grpc.client.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>net.devh</groupId>
 			<artifactId>grpc-client-spring-boot-starter</artifactId>
-			<version>${grpc.client.version}</version>
+			<version>${grpc.starter.version}</version>
 		</dependency>
+
 		<dependency>
 			<groupId>net.devh</groupId>
 			<artifactId>grpc-server-spring-boot-starter</artifactId>

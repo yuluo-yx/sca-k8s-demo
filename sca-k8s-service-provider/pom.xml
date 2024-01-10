@@ -16,6 +16,7 @@
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<nacos.client>2.3.0</nacos.client>
 	</properties>
 
 	<dependencies>
@@ -23,6 +24,29 @@
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-k8s-common</artifactId>
 			<version>2024.01.08</version>
+			<exclusions>
+				<exclusion>
+					<groupId>net.devh</groupId>
+					<artifactId>grpc-client-spring-boot-starter</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.alibaba.nacos</groupId>
+					<artifactId>nacos-client</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba.nacos</groupId>
+			<artifactId>nacos-client</artifactId>
+			<version>${nacos.client}</version>
 		</dependency>
 	</dependencies>
 
