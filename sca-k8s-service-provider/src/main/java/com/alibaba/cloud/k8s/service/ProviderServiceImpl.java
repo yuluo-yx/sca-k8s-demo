@@ -25,7 +25,6 @@ public class ProviderServiceImpl extends SCAk8sProviderGrpc.SCAk8sProviderImplBa
 		);
 
 		responseObserver.onCompleted();
-		super.providerA(request, responseObserver);
 	}
 
 	@Override
@@ -38,6 +37,5 @@ public class ProviderServiceImpl extends SCAk8sProviderGrpc.SCAk8sProviderImplBa
 						.build()
 		);
 		responseObserver.onCompleted();
-		super.providerB(request, responseObserver);
 	}
 }
