@@ -1,0 +1,42 @@
+version: '3.3'
+services:
+
+  consumer-service:
+    image: ${IMAGES_PREFIX}sca-k8s-demo-consumer-service
+    build:
+      dockerfile: ${CONSUMER_APPS}Dockerfile
+      context: .
+      args:
+        CONSUMER_APPS: ${CONSUMER_APPS}
+        INNER_CONSUMER_PORT: ${INNER_CONSUMER_PORT}
+        CONSUMER_ACTUATOR_PORT: ${CONSUMER_ACTUATOR_PORT}
+    container_name: ${CONTAINER_NAME_PREFIX}-consumer-service
+    restart: on-failure
+    volumes:
+      - /etc/localtime:/etc/localtime
+    ports:
+      - ${CONSUMER_PORT}:${INNER_CONSUMER_PORT}
+    networks:
+      - sca-k8s-demo
+
+  provider-service:
+    image: ${IMAGES_PREFIX}sca-k8s-demo-provider-service
+    build:
+      dockerfile: ${PROVIDER_APPS}Dockerfile
+      context: .
+      args:
+        GRPC_PORT: ${GRPC_PORT}
+        PROVIDER_APPS: ${PROVIDER_APPS}
+        INNER_PROVIDER_PORT: ${INNER_PROVIDER_PORT}
+        PROVIDER_ACTUATOR_PORT: ${PROVIDER_ACTUATOR_PORT}
+    container_name: ${CONTAINER_NAME_PREFIX}-provider-service
+    restart: on-failure
+    volumes:
+      - /etc/localtime:/etc/localtime
+    ports:
+      - ${PROVIDER_PORT}:${INNER_PROVIDER_PORT}
+    networks:
+      - sca-k8s-demo
+
+networks:
+  sca-k8s-demo:

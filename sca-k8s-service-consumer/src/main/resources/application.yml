@@ -11,6 +11,18 @@ spring:
         username: 'nacos'
         password: 'nacos'
 
+management:
+  server:
+    port: 30002
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 grpc:
   client:
     sca-k8s-provider:
