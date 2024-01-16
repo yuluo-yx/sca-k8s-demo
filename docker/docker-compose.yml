@@ -1,6 +1,40 @@
 version: '3.3'
 services:
 
+  mysql:
+    image: mysql:8.0.31
+    container_name: ${CONTAINER_NAME_PREFIX}mysql
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+      interval: 3s
+      retries: 5
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - ${MYSQL_PORT}:${INNER_MYSQL_PORT}
+    volumes:
+      - ./mysql/init.d/nacos-db.sql:/docker-entrypoint-initdb.d/nacos-db.sql
+    command:
+      [
+        --character-set-server=utf8mb4,
+        --collation-server=utf8mb4_unicode_ci,
+        --default-authentication-plugin=mysql_native_password
+      ]
+
+  nacos:
+    image: nacos/nacos-server:v2.3.0
+    container_name: ${CONTAINER_NAME_PREFIX}nacos-standalone-mysql
+    env_file:
+      - ./nacos/nacos-standalone-mysql.env
+    ports:
+      - ${NACOS_GRPC_PORT}:${NACOS_GRPC_PORT}
+      - ${NACOS_SERVER_PORT}:${NACOS_SERVER_PORT}
+    restart: always
+    depends_on:
+      - mysql
+
   consumer-service:
     image: ${IMAGES_PREFIX}sca-k8s-demo-consumer-service
     build:
@@ -10,12 +44,15 @@ services:
         CONSUMER_APPS: ${CONSUMER_APPS}
         INNER_CONSUMER_PORT: ${INNER_CONSUMER_PORT}
         CONSUMER_ACTUATOR_PORT: ${CONSUMER_ACTUATOR_PORT}
-    container_name: ${CONTAINER_NAME_PREFIX}-consumer-service
+    container_name: ${CONTAINER_NAME_PREFIX}consumer-service
     restart: on-failure
     volumes:
       - /etc/localtime:/etc/localtime
     ports:
       - ${CONSUMER_PORT}:${INNER_CONSUMER_PORT}
+    depends_on:
+      - nacos
+      - mysql
     networks:
       - sca-k8s-demo
 
@@ -29,12 +66,15 @@ services:
         PROVIDER_APPS: ${PROVIDER_APPS}
         INNER_PROVIDER_PORT: ${INNER_PROVIDER_PORT}
         PROVIDER_ACTUATOR_PORT: ${PROVIDER_ACTUATOR_PORT}
-    container_name: ${CONTAINER_NAME_PREFIX}-provider-service
+    container_name: ${CONTAINER_NAME_PREFIX}provider-service
     restart: on-failure
     volumes:
       - /etc/localtime:/etc/localtime
     ports:
       - ${PROVIDER_PORT}:${INNER_PROVIDER_PORT}
+    depends_on:
+      - nacos
+      - mysql
     networks:
       - sca-k8s-demo
 

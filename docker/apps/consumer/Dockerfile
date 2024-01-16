@@ -8,7 +8,7 @@ ARG CONSUMER_ACTUATOR_PORT
 ARG CONSUMER_APPS
 
 COPY ${CONSUMER_APPS}app.jar /app.jar
-COPY ${CONSUMER_APPS}application-docker.yml application-docker.yml
+COPY ${CONSUMER_APPS}application-docker.yml /application-docker.yml
 
 EXPOSE ${INNER_CONSUMER_PORT}
 EXPOSE ${CONSUMER_ACTUATOR_PORT}

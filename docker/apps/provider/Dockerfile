@@ -9,7 +9,7 @@ ARG INNER_PROVIDER_PORT
 ARG PROVIDER_ACTUATOR_PORT
 
 COPY ${PROVIDER_APPS}app.jar /app.jar
-COPY ${PROVIDER_APPS}application-docker.yml application-docker.yml
+COPY ${PROVIDER_APPS}application-docker.yml /application-docker.yml
 
 EXPOSE ${INNER_PROVIDER_PORT}
 EXPOSE ${PROVIDER_ACTUATOR_PORT}
