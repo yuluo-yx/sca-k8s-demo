@@ -35,6 +35,7 @@ spec:
         hostPath:
           path: /var/lib/mysql
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
