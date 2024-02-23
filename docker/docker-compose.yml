@@ -26,6 +26,11 @@ services:
   nacos:
     image: nacos/nacos-server:v2.3.0
     container_name: ${CONTAINER_NAME_PREFIX}nacos-standalone-mysql
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8848/nacos/v1/console/health/readiness" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
     env_file:
       - ./nacos/nacos-standalone-mysql.env
     ports:
@@ -33,28 +38,8 @@ services:
       - ${NACOS_SERVER_PORT}:${NACOS_SERVER_PORT}
     restart: always
     depends_on:
-      - mysql
-
-  consumer-service:
-    image: ${IMAGES_PREFIX}sca-k8s-demo-consumer-service
-    build:
-      dockerfile: ${CONSUMER_APPS}Dockerfile
-      context: .
-      args:
-        CONSUMER_APPS: ${CONSUMER_APPS}
-        INNER_CONSUMER_PORT: ${INNER_CONSUMER_PORT}
-        CONSUMER_ACTUATOR_PORT: ${CONSUMER_ACTUATOR_PORT}
-    container_name: ${CONTAINER_NAME_PREFIX}consumer-service
-    restart: on-failure
-    volumes:
-      - /etc/localtime:/etc/localtime
-    ports:
-      - ${CONSUMER_PORT}:${INNER_CONSUMER_PORT}
-    depends_on:
-      - nacos
-      - mysql
-    networks:
-      - sca-k8s-demo
+      mysql:
+        condition: service_healthy
 
   provider-service:
     image: ${IMAGES_PREFIX}sca-k8s-demo-provider-service
@@ -68,13 +53,53 @@ services:
         PROVIDER_ACTUATOR_PORT: ${PROVIDER_ACTUATOR_PORT}
     container_name: ${CONTAINER_NAME_PREFIX}provider-service
     restart: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:30000/actuator/health/readiness" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
     volumes:
       - /etc/localtime:/etc/localtime
     ports:
+      - ${GRPC_PORT}:${GRPC_PORT}
       - ${PROVIDER_PORT}:${INNER_PROVIDER_PORT}
+      - ${PROVIDER_ACTUATOR_PORT}:${PROVIDER_ACTUATOR_PORT}
     depends_on:
-      - nacos
-      - mysql
+      mysql:
+        condition: service_healthy
+      nacos:
+        condition: service_healthy
+    networks:
+      - sca-k8s-demo
+
+  consumer-service:
+    image: ${IMAGES_PREFIX}sca-k8s-demo-consumer-service
+    build:
+      dockerfile: ${CONSUMER_APPS}Dockerfile
+      context: .
+      args:
+        CONSUMER_APPS: ${CONSUMER_APPS}
+        INNER_CONSUMER_PORT: ${INNER_CONSUMER_PORT}
+        CONSUMER_ACTUATOR_PORT: ${CONSUMER_ACTUATOR_PORT}
+    container_name: ${CONTAINER_NAME_PREFIX}consumer-service
+    restart: on-failure
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/actuator/health/readiness" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - /etc/localtime:/etc/localtime
+    ports:
+      - ${CONSUMER_PORT}:${INNER_CONSUMER_PORT}
+      - ${CONSUMER_ACTUATOR_PORT}:${CONSUMER_ACTUATOR_PORT}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      nacos:
+        condition: service_healthy
+      provider-service:
+        condition: service_healthy
     networks:
       - sca-k8s-demo
 
