@@ -390,7 +390,7 @@ grpc:
 
 准备 k8s 集群，此处为了演示方便，使用 kind 模拟 k8s cluster。
 
-![image-20240225175008463](images\image-20240225175008463.png)
+![image-20240225175008463](images/image-20240225175008463.png)
 
 ### 部署流程
 
@@ -398,19 +398,19 @@ grpc:
 
 执行 `kubectl create -f sca-k8s-demo-mysql.yaml` 创建 nacos 需要的 mysql 服务：
 
-![image-20240225175920425](images\image-20240225175920425.png)
+![image-20240225175920425](images/image-20240225175920425.png)
 
 创建成功如下所示：
 
-![image-20240225180004647](images\image-20240225180004647.png)
+![image-20240225180004647](images/image-20240225180004647.png)
 
 执行 `kubectl create -f sca-k8s-demo-nacos.yaml` 创建 nacos 需要的 mysql 服务：
 
-![image-20240225180104329](images\image-20240225180104329.png)
+![image-20240225180104329](images/image-20240225180104329.png)
 
 创建成功如下所示：
 
-![image-20240225180603568](images\image-20240225180603568.png)
+![image-20240225180603568](images/image-20240225180603568.png)
 
 > 这里没有使用 ingress 暴露 nacos 服务，使用端口转发的方式将 nacos 暴露出来。
 >
@@ -422,13 +422,13 @@ grpc:
 
 浏览器访问 nacos console：
 
-![image-20240225182956824](images\image-20240225182956824.png)
+![image-20240225182956824](images/image-20240225182956824.png)
 
 #### 打包 Docker Images
 
 修改应用配置文件中的 nacos server 地址为端口转发时使用的虚拟机地址，确保服务成功注册。consumer 和 provider 同时修改。
 
-![image-20240225183636922](images\image-20240225183636922.png)
+![image-20240225183636922](images/image-20240225183636922.png)
 
 为了使用方便，此处使用阿里云容器镜像服务。执行下述命令之前先使用 `docker login` 命令登陆 docker hub，确保 `push` 镜像成功！
 
@@ -519,21 +519,21 @@ consumer 对比 provider 多了一个 svc 配置，其他相同。之后需要�
 
 之后部署 provider service `ukbectl create -f sca-k8s-demo-provider.yaml`：
 
-![image-20240225210717202](images\image-20240225210717202.png)
+![image-20240225210717202](images/image-20240225210717202.png)
 
 执行 `kubectl logs sca-k8s-demo-provider-service-xxxx` 查看 pod 日志，发现激活的配置文件为 `k8s`：
 
-![image-20240225210541866](images\image-20240225210541866.png)
+![image-20240225210541866](images/image-20240225210541866.png)
 
 查看 nacos 控制台，发现 provider 已经注册：
 
-![image-20240225210515801](images\image-20240225210515801.png)
+![image-20240225210515801](images/image-20240225210515801.png)
 
 consumer 部署方式相同，执行 `kubectl create -f sca-k8s-demo-consumer.yaml` 即可部署。
 
 最终部署所有的 k8s pod 如下图：
 
-![image-20240225210835325](images\image-20240225210835325.png)
+![image-20240225210835325](images/image-20240225210835325.png)
 
 ### 访问
 
