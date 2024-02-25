@@ -1,20 +1,20 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: mysql
+  name: sca-k8s-demo-mysql
   labels:
-    name: mysql
+    name: sca-k8s-demo-mysql
 spec:
   replicas: 1
   selector:
-    name: mysql
+    name: sca-k8s-demo-mysql
   template:
     metadata:
       labels:
-        name: mysql
+        name: sca-k8s-demo-mysql
     spec:
       containers:
-      - name: mysql
+      - name: sca-k8s-demo-mysql
         image: nacos/nacos-mysql:8.0.16
         ports:
         - containerPort: 3306
@@ -39,12 +39,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mysql
+  name: sca-k8s-demo-mysql
   labels:
-    name: mysql
+    name: sca-k8s-demo-mysql
 spec:
   ports:
   - port: 3306
     targetPort: 3306
   selector:
-    name: mysql
+    name: sca-k8s-demo-mysql

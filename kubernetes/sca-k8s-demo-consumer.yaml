@@ -1,41 +1,59 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: zlt-nacos-consumer
+  labels:
+    app: sca-k8s-demo-consumer-service
+  name: sca-k8s-demo-consumer-service-svc
 spec:
-  clusterIP: None
-  selector:
-    app: zlt-nacos-consumer
   ports:
-  - name: web
-    port: 8080
-    targetPort: 8080
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: sca-k8s-demo-consumer-service
+  type: ClusterIP
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: zlt-nacos-consumer
+  labels:
+    app: sca-k8s-demo-consumer-service
+  name: sca-k8s-demo-consumer-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: zlt-nacos-consumer
+      app: sca-k8s-demo-consumer-service
   template:
     metadata:
       labels:
-        app: zlt-nacos-consumer
+        app: sca-k8s-demo-consumer-service
     spec:
-      imagePullSecrets:
-      - name: aliyuncs
       containers:
-      - name: server
-        image: registry.cn-guangzhou.aliyuncs.com/zlt-test/nacos-consumer:1.0-SNAPSHOT
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort: 8080
-        env:
-        - name: DUBBO_REGISTRY_ADDRESS
-          value: "nacos://nacos-standalone:8848"
-        - name: DUBBO_IP_TO_REGISTRY
-          value: "zlt-nacos-consumer"
+        - env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: sca-k8s-demo-spring-profile-cm
+                  key: spring-profiles-active
+            # jvm arguments
+            # - name: JAVA_OPTION
+            #  value: "-Dfile.encoding=UTF-8 -XX:+UseParallelGC -XX:+PrintGCDetails -Xloggc:/var/log/devops-example.gc.log -XX:+HeapDumpOnOutOfMemoryError -XX:+DisableExplicitGC"
+            # - name: XMX
+            # value: "128m"
+            # - name: XMS
+            # value: "128m"
+            # - name: XMN
+            # value: "64m"
+          image: registry.cn-hangzhou.aliyuncs.com/yuluo-yx/sca-k8s-demo-consumer-service:latest
+          name: sca-k8s-demo-consumer-service
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 30002
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nacos-standalone
+  name: sca-k8s-demo-nacos-standalone
   labels:
-    app: nacos-standalone
+    app: sca-k8s-demo-nacos-standalone
 spec:
   type: ClusterIP
   clusterIP: None
@@ -21,15 +21,15 @@ spec:
     name: old-raft-rpc
     targetPort: 7848
   selector:
-    app: nacos
+    app: sca-k8s-demo-nacos-standalone
 ---
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nacos-cm
+  name: sca-k8s-demo-nacos-cm
 data:
-  mysql.host: "mysql"
+  mysql.host: "sca-k8s-demo-mysql"
   mysql.db.name: "nacos_devtest"
   mysql.port: "3306"
   mysql.user: "nacos"
@@ -39,13 +39,13 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nacos
+  name: sca-k8s-demo-nacos-standalone
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: nacos
+        app: sca-k8s-demo-nacos-standalone
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
@@ -82,27 +82,27 @@ spec:
         - name: MYSQL_SERVICE_HOST
           valueFrom:
             configMapKeyRef:
-              name: nacos-cm
+              name: sca-k8s-demo-nacos-cm
               key: mysql.host
         - name: MYSQL_SERVICE_DB_NAME
           valueFrom:
             configMapKeyRef:
-              name: nacos-cm
+              name: sca-k8s-demo-nacos-cm
               key: mysql.db.name
         - name: MYSQL_SERVICE_PORT
           valueFrom:
             configMapKeyRef:
-              name: nacos-cm
+              name: sca-k8s-demo-nacos-cm
               key: mysql.port
         - name: MYSQL_SERVICE_USER
           valueFrom:
             configMapKeyRef:
-              name: nacos-cm
+              name: sca-k8s-demo-nacos-cm
               key: mysql.user
         - name: MYSQL_SERVICE_PASSWORD
           valueFrom:
             configMapKeyRef:
-              name: nacos-cm
+              name: sca-k8s-demo-nacos-cm
               key: mysql.password
         - name: MODE
           value: "standalone"
@@ -112,4 +112,4 @@ spec:
           value: "hostname"
   selector:
     matchLabels:
-      app: nacos
+      app: sca-k8s-demo-nacos-standalone
