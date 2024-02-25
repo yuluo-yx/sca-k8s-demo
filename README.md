@@ -20,16 +20,16 @@ github 地址：https://github.com/yuluo-yx/sca-k8s-demo
 
 ```shell
 ├─docker-compose				# Docker compose 部署文件
-├─kubernetes				    # Kubernetes 部署文件
+├─kubernetes				        # Kubernetes 部署文件
    └─docker-images
     ├─consumer
-    	├─ application-k8s.yaml  # k8s 环境的配置文件
-    	├─ app.jar               # 应用 jar 包
-    	└─ Dockerfile			# 打包的 Dockerfile
+    	├─ application-k8s.yaml                 # k8s 环境的配置文件
+    	├─ app.jar                              # 应用 jar 包
+    	└─ Dockerfile			        # 打包的 Dockerfile
     └─provider
-├─sca-k8s-service-consumer		 # sca 服务消费者模块 
-├─sca-k8s-service-provider		 # sca 服务提供者模块
-└─spring-k8s-common  		     # grpc 公共依赖模块
+├─sca-k8s-service-consumer      		# sca 服务消费者模块 
+├─sca-k8s-service-provider		        # sca 服务提供者模块
+└─spring-k8s-common  		                # grpc 公共依赖模块
 ```
 
 ### common 模块
