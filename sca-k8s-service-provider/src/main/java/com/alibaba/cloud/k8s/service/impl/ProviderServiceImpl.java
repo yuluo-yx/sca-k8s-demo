@@ -1,13 +1,16 @@
-package com.alibaba.cloud.k8s.service;
+package com.alibaba.cloud.k8s.service.impl;
 
+import com.alibaba.cloud.k8s.service.ProviderService;
+import org.springframework.stereotype.Service;
 
-import com.alibaba.cloud.k8s.service.impl.ProviderService;
+import java.io.Serial;
 
 /**
  * @author yuluo
  * @author 1481556636@qq.com
  */
 
+@Service
 public class ProviderServiceImpl implements ProviderService {
 
 	@Override

@@ -16,8 +16,6 @@ github 地址：https://github.com/yuluo-yx/sca-k8s-demo
 
 ### 项目结构
 
-> demo 项目使用 grpc 作为 rpc 协议。
-
 ```shell
 ├─docker-compose				# Docker compose 部署文件
 ├─kubernetes				        # Kubernetes 部署文件
@@ -29,100 +27,6 @@ github 地址：https://github.com/yuluo-yx/sca-k8s-demo
     └─provider
 ├─sca-k8s-service-consumer      		# sca 服务消费者模块 
 ├─sca-k8s-service-provider		        # sca 服务提供者模块
-└─spring-k8s-common  		                # grpc 公共依赖模块
-```
-
-### common 模块
-
-protobuf 文件：
-
-```protobuf
-syntax = "proto3";
-
-option java_multiple_files = true;
-option java_package = "com.alibaba.cloud.grpc.lib";
-option java_outer_classname = "ScaK8sProto";
-
-service SCAk8sProvider {
-
-  rpc providerA (RequestBody) returns (ResponseBody) {}
-
-  rpc providerB (RequestBody) returns (ResponseBody) {}
-}
-
-message ResponseBody {
-
-  string message = 1;
-}
-
-message RequestBody {
-
-  string consumer = 1;
-}
-```
-
-grpc 插件配置
-
-```xml
-<build>
-    <extensions>
-        <extension>
-            <groupId>kr.motd.maven</groupId>
-            <artifactId>os-maven-plugin</artifactId>
-            <version>1.6.2</version>
-        </extension>
-    </extensions>
-    <plugins>
-        <plugin>
-            <groupId>org.xolstice.maven.plugins</groupId>
-            <artifactId>protobuf-maven-plugin</artifactId>
-            <version>0.6.1</version>
-            <configuration>
-                <protocArtifact>com.google.protobuf:protoc:3.12.0:exe:${os.detected.classifier}</protocArtifact>
-                <pluginId>grpc-java</pluginId>
-                <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.34.1:exe:${os.detected.classifier}</pluginArtifact>
-                <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
-                <clearOutputDirectory>false</clearOutputDirectory>
-            </configuration>
-            <executions>
-                <execution>
-                    <goals>
-                        <goal>compile</goal>
-                        <goal>compile-custom</goal>
-                    </goals>
-                </execution>
-            </executions>
-        </plugin>
-
-        <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <version>3.0.0</version>
-            <executions>
-                <execution>
-                    <id>add-source</id>
-                    <phase>generate-sources</phase>
-                    <goals>
-                        <goal>add-source</goal>
-                    </goals>
-                    <configuration>
-                        <sources>
-                            <source>${project.basedir}/src/main/gen</source>
-                            <source>${project.basedir}/src/main/java</source>
-                        </sources>
-                    </configuration>
-                </execution>
-            </executions>
-        </plugin>
-        <plugin>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-maven-plugin</artifactId>
-            <configuration>
-                <skip>true</skip>
-            </configuration>
-        </plugin>
-    </plugins>
-</build>
 ```
 
 ### provider 模块
@@ -131,46 +35,44 @@ provider pom.xml 文件
 
 ```xml
 <dependencies>
-         <!-- 引入 common 模块 -->
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-k8s-common</artifactId>
-			<version>2024.01.08</version>
-             <!-- server 不需要 client 依赖 -->
-			<exclusions>
-				<exclusion>
-					<groupId>net.devh</groupId>
-					<artifactId>grpc-client-spring-boot-starter</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+  <dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-k8s-common</artifactId>
+    <version>2024.01.08</version>
+    <exclusions>
+      <exclusion>
+        <groupId>net.devh</groupId>
+        <artifactId>grpc-client-spring-boot-starter</artifactId>
+      </exclusion>
+    </exclusions>
+  </dependency>
 
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>com.alibaba.nacos</groupId>
-					<artifactId>nacos-client</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+  <dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+    <exclusions>
+      <exclusion>
+        <groupId>com.alibaba.nacos</groupId>
+        <artifactId>nacos-client</artifactId>
+      </exclusion>
+    </exclusions>
+  </dependency>
 
-		<dependency>
-			<groupId>com.alibaba.nacos</groupId>
-			<artifactId>nacos-client</artifactId>
-			<version>${nacos.client}</version>
-		</dependency>
+  <dependency>
+    <groupId>com.alibaba.nacos</groupId>
+    <artifactId>nacos-client</artifactId>
+    <version>${nacos.client}</version>
+  </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+  </dependency>
 
-	</dependencies>
+</dependencies>
 ```
 
-provider service java 文件
+provider controller java 文件
 
 ```java
 @GrpcService

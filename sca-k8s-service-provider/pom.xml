@@ -20,17 +20,6 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-k8s-common</artifactId>
-			<version>2024.01.08</version>
-			<exclusions>
-				<exclusion>
-					<groupId>net.devh</groupId>
-					<artifactId>grpc-client-spring-boot-starter</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>

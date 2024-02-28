@@ -18,7 +18,6 @@
 	<modules>
 		<module>sca-k8s-service-provider</module>
 		<module>sca-k8s-service-consumer</module>
-		<module>spring-k8s-common</module>
 	</modules>
 
 	<properties>

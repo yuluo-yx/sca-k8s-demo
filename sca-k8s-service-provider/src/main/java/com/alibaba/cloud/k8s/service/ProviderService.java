@@ -1,4 +1,4 @@
-package com.alibaba.cloud.k8s.service.impl;
+package com.alibaba.cloud.k8s.service;
 
 /**
  * @author yuluo
