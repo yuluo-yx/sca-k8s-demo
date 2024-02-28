@@ -407,8 +407,8 @@ configMap 资源文件：用于设置一些 jvm 调优参数和指定激活的�
 > ```shell
 > application.yml	   # 通用配置项
 > application-dev.yml	   # 开发环境配置
-> application-test.yml     # 测试环境配置
-> application-prod.yml     # 生产环境配置
+> application-test.yml	   # 测试环境配置
+> application-prod.yml	   # 生产环境配置
 > ```
 >
 > 在此 demo 设置应用配置文件为 k8s，如上文项目结构所示！
