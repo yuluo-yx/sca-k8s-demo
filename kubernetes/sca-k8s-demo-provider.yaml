@@ -36,7 +36,7 @@ spec:
             - containerPort: 9000
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /actuator/health/liveness
               port: 30001
               scheme: HTTP
             initialDelaySeconds: 20
