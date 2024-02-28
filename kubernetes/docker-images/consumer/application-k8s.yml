@@ -1,10 +1,13 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: sca-k8s-consumer
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.20.129:8848
+        server-addr: 192.168.31.127:8848
         username: 'nacos'
         password: 'nacos'
 
@@ -20,9 +23,6 @@ management:
       exposure:
         include: health
 
-grpc:
-  server:
-    port: 9000
-
-server:
-  port: 8080
+feign:
+  sentinel:
+    enabled: true
