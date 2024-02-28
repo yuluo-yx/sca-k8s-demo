@@ -33,10 +33,10 @@ spec:
           name: sca-k8s-demo-provider-service
           image: registry.cn-hangzhou.aliyuncs.com/yuluo-yx/sca-k8s-demo-provider-service:latest
           ports:
-            - containerPort: 9000
+            - containerPort: 8082
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /actuator/health/liveness
               port: 30001
               scheme: HTTP
             initialDelaySeconds: 20

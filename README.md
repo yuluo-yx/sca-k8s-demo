@@ -476,7 +476,7 @@ spec:
           # liveness 探针
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /actuator/health/liveness
               port: 30001
               scheme: HTTP
             initialDelaySeconds: 20
@@ -502,6 +502,12 @@ consumer 对比 provider 多了一个 svc 配置，其他相同。之后需要�
 
 ![image-20240225210515801](images/image-20240225210515801.png)
 
+尝试访问 provider service 接口服务：
+
+转发 provider service pod：`kubectl port-forward pod-name 8082:8082`
+
+![image-20240228111846689](images/image-20240228111846689.png)
+
 consumer 部署方式相同，执行 `kubectl create -f sca-k8s-demo-consumer.yaml` 即可部署。
 
 最终部署所有的 k8s pod 如下图：
@@ -510,16 +516,9 @@ consumer 部署方式相同，执行 `kubectl create -f sca-k8s-demo-consumer.ya
 
 ### 访问
 
-转发 consumer 服务：`kubectl port-forward --address localhost,192.168.20.129 svc/sca-k8s-demo-consumer-service 8080:8080 `
+转发 consumer 服务：`kubectl port-forward --address localhost,192.168.20.129 svc/sca-k8s-demo-consumer-service-svc 8080:8080 `
 
-终端输入以下命令：
-
-```shell
-$ curl http://127.0.0.1:8080/consumer/a
-This response from provider A!
-$ curl http://127.0.0.1:8080/consumer/b
-This response from provider B!
-```
+![image-20240228112917449](images/image-20240228112917449.png)
 
 
 
