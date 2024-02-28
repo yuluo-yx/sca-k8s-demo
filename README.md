@@ -34,42 +34,31 @@ github 地址：https://github.com/yuluo-yx/sca-k8s-demo
 provider pom.xml 文件
 
 ```xml
-<dependencies>
-  <dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-k8s-common</artifactId>
-    <version>2024.01.08</version>
-    <exclusions>
-      <exclusion>
-        <groupId>net.devh</groupId>
-        <artifactId>grpc-client-spring-boot-starter</artifactId>
-      </exclusion>
-    </exclusions>
-  </dependency>
+	<dependencies>
 
-  <dependency>
-    <groupId>com.alibaba.cloud</groupId>
-    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-    <exclusions>
-      <exclusion>
-        <groupId>com.alibaba.nacos</groupId>
-        <artifactId>nacos-client</artifactId>
-      </exclusion>
-    </exclusions>
-  </dependency>
+		<dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.alibaba.nacos</groupId>
+					<artifactId>nacos-client</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
-  <dependency>
-    <groupId>com.alibaba.nacos</groupId>
-    <artifactId>nacos-client</artifactId>
-    <version>${nacos.client}</version>
-  </dependency>
+		<dependency>
+			<groupId>com.alibaba.nacos</groupId>
+			<artifactId>nacos-client</artifactId>
+			<version>${nacos.client}</version>
+		</dependency>
 
-  <dependency>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-actuator</artifactId>
-  </dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
-</dependencies>
+	</dependencies>
 ```
 
 provider controller java 文件
