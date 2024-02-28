@@ -75,39 +75,55 @@ provider pom.xml 文件
 provider controller java 文件
 
 ```java
-@GrpcService
-public class ProviderServiceImpl extends SCAk8sProviderGrpc.SCAk8sProviderImplBase {
+@RestController
+@RequestMapping("/provider")
+public class ProviderController {
+
+    @Resource
+    private ProviderService providerService;
+
+
+    @GetMapping("/a")
+    public String providerA() {
+
+        return providerService.providerA();
+    }
+
+    @GetMapping("/b")
+    public String providerB() {
+
+        return providerService.providerB();
+    }
+
+}
+```
+
+provider service java 文件
+
+```java
+@Service
+public class ProviderServiceImpl implements ProviderService {
 
 	@Override
-	public void providerA(RequestBody request, StreamObserver<ResponseBody> responseObserver) {
+	public String providerA() {
 
-		responseObserver.onNext(
-				ResponseBody
-						.newBuilder()
-						.setMessage("This response from provider A!")
-						.build()
-		);
-
-		responseObserver.onCompleted();
+		return "This response from provider A!";
 	}
 
 	@Override
-	public void providerB(RequestBody request, StreamObserver<ResponseBody> responseObserver) {
+	public String providerB() {
 
-		responseObserver.onNext(
-				ResponseBody
-						.newBuilder()
-						.setMessage("This response from provider B!")
-						.build()
-		);
-		responseObserver.onCompleted();
+		return "This response from provider B!";
 	}
 }
 ```
 
-application.yml 配置
+provider application.yml 配置
 
 ```yml
+server:
+  port: 8082
+  
 spring:
   application:
     name: sca-k8s-provider
@@ -132,116 +148,177 @@ management:
     web:
       exposure:
         include: health
-
-grpc:
-  server:
-    port: 9000
-
-server:
-  port: 8082
 ```
 
 ### consumer 模块
+
+> Consumer 模块使用 `spring-cloud-openfeign` 作为 rpc 组件。
 
 consumer pom.xml 文件
 
 ```xml
 <dependencies>
-    <dependency>
-        <groupId>com.alibaba.cloud</groupId>
-        <artifactId>spring-k8s-common</artifactId>
-        <version>2024.01.08</version>
-        <!-- 和 provider 同理，client 排除 server -->
-        <exclusions>
-            <exclusion>
-                <groupId>net.devh</groupId>
-                <artifactId>grpc-server-spring-boot-starter</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
 
-    <dependency>
-        <groupId>com.alibaba.cloud</groupId>
-        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        <exclusions>
-            <exclusion>
-                <groupId>com.alibaba.nacos</groupId>
-                <artifactId>nacos-client</artifactId>
-            </exclusion>
-        </exclusions>
-    </dependency>
-
-    <dependency>
+  <dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+    <exclusions>
+      <exclusion>
         <groupId>com.alibaba.nacos</groupId>
         <artifactId>nacos-client</artifactId>
-        <version>${nacos.client}</version>
-    </dependency>
+      </exclusion>
+    </exclusions>
+  </dependency>
 
-    <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>32.1.3-android</version>
-        <scope>compile</scope>
-    </dependency>
+  <dependency>
+    <groupId>com.alibaba.nacos</groupId>
+    <artifactId>nacos-client</artifactId>
+    <version>${nacos.client}</version>
+  </dependency>
 
-    <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+  </dependency>
+
+  <dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+  </dependency>
+
+  <dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+  </dependency>
+
+  <dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+  </dependency>
 </dependencies>
 ```
 
-consumer serivice java 文件
+consumer feign client java 文件
 
 ```java
+@FeignClient(
+        name = "sca-k8s-provider",
+        fallback = K8sFeignCallback.class,
+        configuration = K8sFeignConfig.class,
+        contextId = "sca-k8s-provider"
+)
+public interface K8sFeignClient {
 
+    @GetMapping("/provider/a")
+    String providerA();
+
+    @GetMapping("/provider/b")
+    String providerB();
+
+}
+```
+
+consumer feign config java 文件
+
+```java
+public class K8sFeignConfig {
+
+    @Bean
+    public K8sFeignCallback feignCallback() {
+
+        return new K8sFeignCallback();
+    }
+
+}
+```
+
+Consumer feign fallback java 文件
+
+```java
+public class K8sFeignCallback implements K8sFeignClient{
+
+    @Override
+    public String providerA() {
+
+        return "call provider A interface failed, fallback";
+    }
+
+    @Override
+    public String providerB() {
+
+        return "call provider B interface failed, fallback";
+    }
+}
+```
+
+Consumer controller java
+
+```java
+@RestController
+@RequestMapping("/consumer")
+public class ConsumerController {
+
+	@Autowired
+	private ConsumerService consumerService;
+
+	@GetMapping("/a")
+	public String consumerA() {
+
+		return consumerService.consumerA();
+	}
+
+	@GetMapping("/b")
+	public String consumerB() {
+
+		return consumerService.consumerB();
+	}
+
+}
+```
+
+Consumer service java 文件
+
+```java
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
 
-	private static final String CONSUMER_NAME = "sca-k8s-consumer";
-
-	@GrpcClient("sca-k8s-provider")
-	SCAk8sProviderGrpc.SCAk8sProviderBlockingStub blockingStub;
+	@Autowired
+	private K8sFeignClient feignClient;
 
 	@Override
 	public String consumerA() {
 
-		try {
-			ResponseBody responseBody =
-					blockingStub.providerA(
-							RequestBody
-									.newBuilder()
-									.setConsumer(CONSUMER_NAME + "A")
-									.build());
-			return responseBody.getMessage();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		return feignClient.providerA();
 	}
 
 	@Override
 	public String consumerB() {
 
-		System.out.println(blockingStub);
-
-		try {
-			ResponseBody responseBody = blockingStub.providerB(
-					RequestBody
-							.newBuilder()
-							.setConsumer(CONSUMER_NAME + "B")
-							.build());
-			return responseBody.getMessage();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		return feignClient.providerB();
 	}
 }
-
 ```
 
-application.yml 配置
+Consumer application 主类 java 文件
+
+```java
+@EnableFeignClients
+@EnableDiscoveryClient
+@SpringBootApplication
+@LoadBalancerClients({
+		@LoadBalancerClient("sca-k8s-provider")
+})
+public class SCAK8sConsumerApplication {
+
+	public static void main(String[] args) {
+
+		SpringApplication.run(SCAK8sConsumerApplication.class, args);
+	}
+
+}
+```
+
+consumer application.yml 配置
 
 ```yml
 server:
@@ -269,15 +346,9 @@ management:
       exposure:
         include: health
 
-# grpc client 配置
-grpc:
-  client:
-    sca-k8s-provider:
-      # 使用 nacos 的服务发现配置
-      address: 'discovery:///sca-k8s-provider'
-      enableKeepAlive: true
-      keepAliveWithoutCalls: true
-      negotiationType: plaintext
+feign:
+  sentinel:
+    enabled: true
 ```
 
 ## 部署效果展示
