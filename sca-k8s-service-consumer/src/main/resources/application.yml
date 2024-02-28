@@ -23,10 +23,6 @@ management:
       exposure:
         include: health
 
-grpc:
-  client:
-    sca-k8s-provider:
-      address: 'discovery:///sca-k8s-provider'
-      enableKeepAlive: true
-      keepAliveWithoutCalls: true
-      negotiationType: plaintext
+feign:
+  sentinel:
+    enabled: true

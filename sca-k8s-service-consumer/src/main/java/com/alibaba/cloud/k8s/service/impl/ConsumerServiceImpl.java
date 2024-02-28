@@ -1,11 +1,10 @@
 package com.alibaba.cloud.k8s.service.impl;
 
-import com.alibaba.cloud.grpc.lib.RequestBody;
-import com.alibaba.cloud.grpc.lib.ResponseBody;
-import com.alibaba.cloud.grpc.lib.SCAk8sProviderGrpc;
+import com.alibaba.cloud.k8s.feign.K8sFeignClient;
 import com.alibaba.cloud.k8s.service.ConsumerService;
-import net.devh.boot.grpc.client.inject.GrpcClient;
+import jakarta.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,43 +15,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
 
-	private static final String CONSUMER_NAME = "sca-k8s-consumer";
-
-	@GrpcClient("sca-k8s-provider")
-	SCAk8sProviderGrpc.SCAk8sProviderBlockingStub blockingStub;
+	@Autowired
+	private K8sFeignClient feignClient;
 
 	@Override
 	public String consumerA() {
 
-		try {
-			ResponseBody responseBody =
-					blockingStub.providerA(
-							RequestBody
-									.newBuilder()
-									.setConsumer(CONSUMER_NAME + "A")
-									.build());
-			return responseBody.getMessage();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		return feignClient.providerA();
 	}
 
 	@Override
 	public String consumerB() {
 
-		System.out.println(blockingStub);
-
-		try {
-			ResponseBody responseBody = blockingStub.providerB(
-					RequestBody
-							.newBuilder()
-							.setConsumer(CONSUMER_NAME + "B")
-							.build());
-			return responseBody.getMessage();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		return feignClient.providerB();
 	}
 }
