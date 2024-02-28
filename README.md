@@ -508,7 +508,13 @@ spec:
               scheme: HTTP
             initialDelaySeconds: 20
             periodSeconds: 10
-
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 30001
+              schema: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 10
 ```
 
 consumer 对比 provider 多了一个 svc 配置，其他相同。之后需要做端口转发，提供外部访问，同样也可以使用 ingress 暴露服务出去。
