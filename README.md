@@ -434,7 +434,7 @@ grpc:
 
 修改 docker images 的 tag 为自己的阿里云镜像仓库用户名地址。之后执行 `./kubernetes/docker-images/build.sh` 脚本
 
-#### 部署 Provider 和 Comsumer 服务
+#### 部署 Provider 和 Consumer 服务
 
 ##### k8s 部署资源文件解析
 
