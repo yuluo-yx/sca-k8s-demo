@@ -15,10 +15,9 @@
 	<artifactId>sca-k8s-demo</artifactId>
 	<version>2024.01.08</version>
 	<packaging>pom</packaging>
+
 	<modules>
-		<module>sca-k8s-service-provider</module>
-		<module>sca-k8s-service-consumer</module>
-		<module>spring-k8s-common</module>
+		<module>istio-sca-demo-application</module>
 	</modules>
 
 	<properties>
@@ -34,11 +33,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.alibaba.cloud</groupId>
-			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
 		</dependency>
 	</dependencies>
 

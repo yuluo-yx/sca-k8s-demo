@@ -1,16 +1,9 @@
 server:
-  port: 8082
+  port: 8080
 
 spring:
   application:
-    name: sca-k8s-provider
-
-  cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-        username: 'nacos'
-        password: 'nacos'
+    name: istio-sca-demo-application
 
 management:
   server:

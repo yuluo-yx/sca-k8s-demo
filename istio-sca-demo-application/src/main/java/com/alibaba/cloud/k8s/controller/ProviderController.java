@@ -13,22 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @RestController
-@RequestMapping("/provider")
+@RequestMapping("/app")
 public class ProviderController {
 
 	@Resource
 	protected ProviderService providerService;
 
-	@GetMapping("/a")
+	@GetMapping("/svc")
 	public String providerA() {
 
-		return providerService.providerA();
-	}
-
-	@GetMapping("/b")
-	public String providerB() {
-
-		return providerService.providerB();
+		return providerService.service();
 	}
 
 }

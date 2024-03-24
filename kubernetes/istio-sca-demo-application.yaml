@@ -19,7 +19,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
                 configMapKeyRef:
-                  name: sca-k8s-demo-spring-profile-cm
+                  name: istio-sca-demo-cm-cm
                   key: spring-profiles-active
             # jvm arguments
             # - name: JAVA_OPTION
@@ -31,7 +31,7 @@ spec:
             # - name: XMN
             # value: "64m"
           name: sca-k8s-demo-provider-service
-          image: registry.cn-hangzhou.aliyuncs.com/yuluo-yx/sca-k8s-demo-provider-service:latest
+          image: registry.cn-hangzhou.aliyuncs.com/yuluo-yx/istio-sca-demo-application:latest
           ports:
             - containerPort: 9000
           livenessProbe:

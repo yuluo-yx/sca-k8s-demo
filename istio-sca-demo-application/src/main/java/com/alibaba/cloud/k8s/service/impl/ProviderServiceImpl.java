@@ -14,14 +14,9 @@ import org.springframework.stereotype.Service;
 public class ProviderServiceImpl implements ProviderService {
 
 	@Override
-	public String providerA() {
+	public String service() {
 
-		return "This response from provider A!";
+		return "This response from service application";
 	}
 
-	@Override
-	public String providerB() {
-
-		return "This response from provider B!";
-	}
 }

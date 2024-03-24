@@ -7,8 +7,6 @@ package com.alibaba.cloud.k8s.service;
 
 public interface ProviderService {
 
-	String providerA();
-
-	String providerB();
+	String service();
 
 }
