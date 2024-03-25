@@ -129,7 +129,7 @@ kubectl port-forward -n istio-system service/kiali --address=0.0.0.0 20001:20001
 
 访问：http://ip:port/kiali
 
-<img src="D:\project\java_project\sca-k8s-demo\images\image-20240325122657739.png" alt="image-20240325122657739" style="zoom:50%;" />
+<img src="./images/image-20240325122657739.png" alt="image-20240325122657739" style="zoom:50%;" />
 
 ## 部署应用
 
@@ -423,5 +423,5 @@ local-path-storage     local-path-provisioner-7577fdbbfb-sjp54                  
 
 以上便是上述文章中部署的所有 pod。kiali 中显示出了应用的具体信息：
 
-<img src="D:\project\java_project\sca-k8s-demo\images\image-20240325140608310.png" alt="image-20240325140608310" style="zoom:50%;" />
+<img src="./images/image-20240325140608310.png" alt="image-20240325140608310" style="zoom:50%;" />
 
