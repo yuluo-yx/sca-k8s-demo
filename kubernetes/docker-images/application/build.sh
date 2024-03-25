@@ -2,7 +2,7 @@
 
 package() {
   cd application
-  docker build -t registry.cn-hangzhou.aliyuncs.com/yuluo-yx/istio-sca-demo-application
+  docker build -t registry.cn-hangzhou.aliyuncs.com/yuluo-yx/istio-sca-demo-application .
 }
 
 push() {

@@ -1,25 +1,47 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-sca-demo-application-svc
+  labels:
+    app: istio-sca-demo-application
+    service: istio-sca-demo-application
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: http
+  type: ClusterIP
+  selector:
+    app: istio-sca-demo-application
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: istio-sca-demo-application
   labels:
-    app: sca-k8s-demo-provider-service
-  name: sca-k8s-demo-provider-service
+    app: istio-sca-demo-application
+    versions: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sca-k8s-demo-provider-service
+      app: istio-sca-demo-application
   template:
     metadata:
+      # Add the following annotations to enable Istio sidecar injection
+      annotations:
+        sidecar.istio.io/inject: "true"
       labels:
-        app: sca-k8s-demo-provider-service
+        app: istio-sca-demo-application
     spec:
       containers:
         - env:
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
                 configMapKeyRef:
-                  name: istio-sca-demo-cm-cm
+                  name: istio-sca-demo-cm
                   key: spring-profiles-active
             # jvm arguments
             # - name: JAVA_OPTION
@@ -30,10 +52,10 @@ spec:
             # value: "128m"
             # - name: XMN
             # value: "64m"
-          name: sca-k8s-demo-provider-service
+          name: istio-sca-demo-application
           image: registry.cn-hangzhou.aliyuncs.com/yuluo-yx/istio-sca-demo-application:latest
           ports:
-            - containerPort: 9000
+            - containerPort: 8080
           livenessProbe:
             httpGet:
               path: /actuator/health

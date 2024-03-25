@@ -3,4 +3,4 @@ data:
   spring-profiles-active: 'k8s'
 kind: ConfigMap
 metadata:
-  name: sca-k8s-demo-spring-profile-cm
+  name: istio-sca-demo-cm
